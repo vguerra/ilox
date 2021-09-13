@@ -12,7 +12,7 @@ final class iloxTests: XCTestCase {
             loxInterpreter.run(code: "=")
         })
     }
-    
+
     func testScanning2CharTokens() throws {
         XCTAssert(fileCheckOutput(withPrefixes: ["2CTOKENS"], options: .disableColors) {
             // 2CTOKENS-NOT: EQUAL = nil
@@ -21,7 +21,7 @@ final class iloxTests: XCTestCase {
             loxInterpreter.run(code: "==")
         })
     }
-    
+
     func testScanningComments() throws {
         XCTAssert(fileCheckOutput(withPrefixes: ["COMM_TOKENS"], options: .disableColors) {
             // COMM_TOKENS: EQUAL_EQUAL == nil
@@ -34,7 +34,7 @@ final class iloxTests: XCTestCase {
             loxInterpreter.run(code: code)
         })
     }
-    
+
     func testScanningStrings() throws {
         XCTAssert(fileCheckOutput(withPrefixes: ["STR_TOKENS"], options: .disableColors) {
             // STR_TOKENS: STRING("Ta Tb") "Ta Tb" nil
@@ -42,7 +42,7 @@ final class iloxTests: XCTestCase {
             loxInterpreter.run(code: "\"Ta Tb\"")
         })
     }
-    
+
     func testScanningNumbers() throws {
         XCTAssert(fileCheckOutput(withPrefixes: ["NUM_TOKENS"], options: .disableColors) {
             // NUM_TOKENS: NUMBER(3.14) 3.14 nil
@@ -50,9 +50,9 @@ final class iloxTests: XCTestCase {
             loxInterpreter.run(code: "3.14")
         })
     }
-    
+
     func testScanningKeywords() throws {
-        XCTAssert(fileCheckOutput(withPrefixes: ["KEYWORD_TOKENS"]) {
+        XCTAssert(fileCheckOutput(withPrefixes: ["KEYWORD_TOKENS"], options: .disableColors) {
             // KEYWORD_TOKENS: CLASS class nil
             // KEYWORD_TOKENS-NEXT: FOR for nil
             // KEYWORD_TOKENS-NEXT: WHILE while nil
@@ -62,14 +62,46 @@ final class iloxTests: XCTestCase {
     }
     
     func testScanningIdentifiers() throws {
-        XCTAssert(fileCheckOutput(withPrefixes: ["IDENTIFIER_TOKENS"]) {
+        XCTAssert(fileCheckOutput(withPrefixes: ["IDENTIFIER_TOKENS"], options: .disableColors) {
             // IDENTIFIER_TOKENS: IDENTIFIER("thisIsAnIdentifier") thisIsAnIdentifier nil
             // IDENTIFIER_TOKENS-NEXT: EOF  nil
             loxInterpreter.run(code: "thisIsAnIdentifier")
         })
     }
 
-    #if !os(macOS)
+    func testScanningCStyleComments() throws {
+        // One line comment
+        XCTAssert(fileCheckOutput(withPrefixes: ["CCOMM_TOKENS"], options: .disableColors) {
+            // CCOMM_TOKENS: EOF  nil
+            loxInterpreter.run(code: "/* this is a comment var class */")
+        })
+
+        XCTAssert(fileCheckOutput(of: .stderr, withPrefixes: ["CCOMM2_TOKENS"], options: .disableColors) {
+            // CCOMM2_TOKENS: [line 1] Error : Unterminated comment
+            loxInterpreter.run(code: "/* comm")
+        })
+
+        XCTAssert(fileCheckOutput(withPrefixes: ["CCOMM3_TOKENS"], options: .disableColors) {
+            let multilineCode = """
+            /* start of comment
+            end of comment */
+            """
+            // CCOMM3_TOKENS: EOF  nil
+            loxInterpreter.run(code: multilineCode)
+        })
+
+        XCTAssert(fileCheckOutput(of: .stderr, withPrefixes: ["CCOMM4_TOKENS"], options: .disableColors) {
+            let multilineCode = """
+            /* start of comment /* one more start
+            end of comment */
+            """
+            // CCOMM4_TOKENS: [line 2] Error : Unterminated comment
+            loxInterpreter.run(code: multilineCode)
+        })
+
+    }
+
+#if !os(macOS)
     static var allTests = testCase([
         ("testScanning1CharTokens", testScanning1CharTokens),
         ("testScanning2CharTokens", testScanning2CharTokens),
@@ -77,7 +109,8 @@ final class iloxTests: XCTestCase {
         ("testScanningStrings", testScanningStrings),
         ("testScanningNumbers", testScanningNumbers),
         ("testScanningKeywords", testScanningKeywords),
-        ("testScanningIdentifiers", testScanningIdentifiers)
+        ("testScanningIdentifiers", testScanningIdentifiers),
+        ("testScanningCStyleComments", testScanningCStyleComments)
     ])
-    #endif
+#endif
 }

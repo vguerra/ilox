@@ -11,6 +11,7 @@ class Scanner {
     var tokens: Array<Token>
     var start: Int = 0
     var current: Int = 0
+    var nestedComments: Int = 0
     var line = 1
 
     static let keywords: [String: TokenType] = [
@@ -169,19 +170,24 @@ class Scanner {
                         advance()
                 }
             } else if (match(expected: "*")) {
-                // We got a C-style comment
-                while (!(peek() == "*" && peekNext() == "/") && !isAtEnd) {
+                nestedComments = 1
+                while (nestedComments != 0 && !isAtEnd) {
+                    if (peek() == "*") {
+                        if (peekNext() == "/") {
+                            advance()
+                            nestedComments = nestedComments - 1
+                        }
+                    } else if (peek() == "/") {
+                        if (peekNext() == "*") {
+                            advance()
+                            nestedComments = nestedComments + 1
+                        }
+                    } else if (peek() == "\n") {
+                        line = line + 1
+                    }
                     advance()
                 }
-                if (!isAtEnd) {
-                    advance()
-                } else {
-                    Error.error(line: line, message: "Unterminated comment(*/)")
-                    break;
-                }
-                if (!isAtEnd) {
-                    advance()
-                } else {
+                if (nestedComments != 0) {
                     Error.error(line: line, message: "Unterminated comment(*/)")
                     break;
                 }
