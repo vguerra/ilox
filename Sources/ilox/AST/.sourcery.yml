@@ -1,0 +1,8 @@
+sources:
+  - "."
+templates:
+  - "Templates"
+output: "."
+args:
+  Arg1: "\"This is argument 1\""
+  Arg2: "\"This is argument 2\""
