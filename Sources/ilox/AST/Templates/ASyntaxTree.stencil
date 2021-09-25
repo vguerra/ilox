@@ -1,6 +1,4 @@
-
 // Automated definitions for {{argument.baseName}}
-
 
 class {{argument.baseName}} {}
 
