@@ -1,6 +1,17 @@
 // Automated definitions for {{argument.baseName}}
 
-class {{argument.baseName}} {}
+class {{argument.baseName}} {
+
+    protocol Visitor {
+        associatedType Return
+
+        {% for typeDef in argument.types %}
+            {% for exprType, _ in typeDef %}
+        func visit{{argument.baseName}}{{exprType}}(_ {{argument.baseName|lowercase}}:{{exprType}}) -> Return
+            {% endfor %}
+        {% endfor %}
+    }
+}
 
 {% for typeDef in argument.types %}
     {% for exprType, exprProperties in typeDef %}
