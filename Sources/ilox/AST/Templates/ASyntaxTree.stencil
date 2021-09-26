@@ -7,9 +7,13 @@ class {{argument.baseName}} {
 
         {% for typeDef in argument.types %}
             {% for exprType, _ in typeDef %}
-        func visit{{argument.baseName}}{{exprType}}(_ {{argument.baseName|lowercase}}:{{exprType}}) -> Return
+        optional func visit{{argument.baseName}}{{exprType}}(_ {{argument.baseName|lowercase}}:{{exprType}}) -> Return
             {% endfor %}
         {% endfor %}
+    }
+
+    func accept<R>(_ visitor: Visitor) -> R {
+        fatalError("You are not allowed to call `accept` from `Exper` class")
     }
 }
 
@@ -21,6 +25,10 @@ class {{exprType}} : {{argument.baseName}} {
     let {{propertyName}} : {{propertyType}}
             {% endfor %}
         {% endfor %}
+
+    override func accept<R>(_ visitor: {{argument.baseName}}.Visitor) -> R {
+        return visitor.visit{{argument.baseName}}{{exprType}}?(expr: self)
+    }
 }
 
     {% endfor %}
