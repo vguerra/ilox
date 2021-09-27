@@ -2,7 +2,7 @@ import XCTest
 import FileCheck
 @testable import ilox
 
-final class iloxTests: XCTestCase {
+final class scannerTests: XCTestCase {
     let loxInterpreter = Lox()
 
     func testScanning1CharTokens() throws {
