@@ -1,35 +1,44 @@
 // Automated definitions for {{argument.baseName}}
 
+protocol Visitor {
+    associatedtype Return
+{% for typeDef in argument.types %}
+    {% for exprType, _ in typeDef %}
+    func visit{{argument.baseName}}{{exprType}}({{argument.baseName|lowercase}}:{{exprType}}) -> Return
+    {% endfor %}
+{% endfor %}
+}
+
 class {{argument.baseName}} {
-
-    protocol Visitor {
-        associatedType Return
-
-        {% for typeDef in argument.types %}
-            {% for exprType, _ in typeDef %}
-        optional func visit{{argument.baseName}}{{exprType}}(_ {{argument.baseName|lowercase}}:{{exprType}}) -> Return
-            {% endfor %}
-        {% endfor %}
-    }
-
-    func accept<R>(_ visitor: Visitor) -> R {
+    func accept<V: Visitor>(visitor: V) -> V.Return {
         fatalError("You are not allowed to call `accept` from `Exper` class")
     }
 }
-
 {% for typeDef in argument.types %}
     {% for exprType, exprProperties in typeDef %}
+
 class {{exprType}} : {{argument.baseName}} {
         {% for propertyDefinition in exprProperties %}
             {% for propertyType, propertyName in propertyDefinition %}
-    let {{propertyName}} : {{propertyType}}
+    let {{propertyName}}: {{propertyType}}
             {% endfor %}
         {% endfor %}
 
-    override func accept<R>(_ visitor: {{argument.baseName}}.Visitor) -> R {
-        return visitor.visit{{argument.baseName}}{{exprType}}?(expr: self)
+    init(
+        {% for propertyDefinition in exprProperties %}
+            {% for propertyType, propertyName in propertyDefinition %}
+            {{propertyName}}: {{propertyType}}{% endfor %}{{ ',' if not forloop.last }}
+        {% endfor %}
+    ) {
+        {% for propertyDefinition in exprProperties %}
+            {% for _, propertyName in propertyDefinition %}
+        self.{{propertyName}} = {{propertyName}}{% endfor %}
+        {% endfor %}
+    }
+
+    override func accept<V: Visitor>(visitor: V) -> V.Return {
+        return visitor.visit{{argument.baseName}}{{exprType}}(expr: self)
     }
 }
-
     {% endfor %}
 {% endfor %}

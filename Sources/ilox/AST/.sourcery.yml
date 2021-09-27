@@ -15,10 +15,10 @@ args:
       "Expr": "expression"
     ],
     "Literal": [
-      "Object": "value"
+      "AnyObject": "value"
     ],
     "Unary": [
-      "Token": "operator",
+      "Token": "op",
       "Expr": "right"
     ]
   ]
