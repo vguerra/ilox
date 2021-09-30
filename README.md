@@ -1,6 +1,6 @@
 # ilox
 
-[![Build](https://github.com/vguerra/ilox/actions/workflows/ci.yml/badge.svg)](https://github.com/vguerra/ilox/actions/workflows/ci.yml)
+[![Build Status](https://github.com/vguerra/ilox/actions/workflows/ci.yml/badge.svg)](https://github.com/vguerra/ilox/actions/workflows/ci.yml)
 
 Interpreter for the Lox programming language.
 
