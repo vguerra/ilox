@@ -1,5 +1,7 @@
 # ilox
 
+[![Build](https://github.com/vguerra/ilox/actions/workflows/ci.yml/badge.svg)](https://github.com/vguerra/ilox/actions/workflows/ci.yml)
+
 Interpreter for the Lox programming language.
 
 This implementatin is based on the [Crafting interpreters](http://craftinginterpreters.com/) book and it's code snippets.
