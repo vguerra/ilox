@@ -7,14 +7,12 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-    name: Swift on ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-
+  macos:
+    runs-on: macos-latest
     steps:
+    - name: Dependencies
+    - run: brew install sourcery
+    - run: "${GITHUB_WORKSPACE}/scripts/pre-build.sh"" 
     - uses: actions/checkout@v2
     - name: Build
       run: swift build -v
