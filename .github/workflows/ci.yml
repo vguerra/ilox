@@ -12,7 +12,7 @@ jobs:
     steps:
     - name: Dependencies
     - run: brew install sourcery
-    - run: "${GITHUB_WORKSPACE}/scripts/pre-build.sh"" 
+    - run: "${GITHUB_WORKSPACE}/scripts/pre-build.sh"
     - uses: actions/checkout@v2
     - name: Build
       run: swift build -v
