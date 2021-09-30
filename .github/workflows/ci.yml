@@ -11,8 +11,9 @@ jobs:
     runs-on: macos-latest
     steps:
     - name: Dependencies
-    - run: brew install sourcery
-    - run: "${GITHUB_WORKSPACE}/scripts/pre-build.sh"
+      run: brew install sourcery
+    - name: Code generation
+      run: "${GITHUB_WORKSPACE}/scripts/pre-build.sh"
     - uses: actions/checkout@v2
     - name: Build
       run: swift build -v
