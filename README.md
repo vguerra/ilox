@@ -14,13 +14,14 @@ This implementation supports the following:
 * Binary expressions: Infix arithmetic operations and logical operators
 * Grouping of expressions via parentheses
 
-expression -> literal
-            | unary
-            | binary
-            | grouping ;
-literal    -> NUMBER | STRING | "true" | "false" | "nil" ;
-grouping   -> "(" expression ")" ;
-unary      -> ( "-" | "!" ) expression ;
-binary     -> expression operator expression ;
-operator   -> "==" | "!=" | "<" | "<=" | ">" | ">=" | "+" | "-" | "*" | "/" ;
-
+```
+expression -> literal 
+            | unary 
+            | binary 
+            | grouping ; 
+literal    -> NUMBER | STRING | "true" | "false" | "nil" ; 
+grouping   -> "(" expression ")" ; 
+unary      -> ( "-" | "!" ) expression ; 
+binary     -> expression operator expression ; 
+operator   -> "==" | "!=" | "<" | "<=" | ">" | ">=" | "+" | "-" | "*" | "/" ; 
+```
