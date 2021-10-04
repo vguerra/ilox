@@ -8,13 +8,19 @@ on:
 
 jobs:
   macos:
-    runs-on: macos-latest
+    runs-on: macos-11
+    strategy:
+      matrix:
+        xcode:
+          - "13.0"
     steps:
+    - uses: actions/checkout@v2
+    - name: Xcode version ${{ matrix.xcode }}
+      run: sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode }}.app
     - name: Dependencies
       run: brew install sourcery
     - name: Code generation
       run: "${GITHUB_WORKSPACE}/scripts/pre-build.sh"
-    - uses: actions/checkout@v2
     - name: Build
       run: swift build -v
     - name: Run tests
