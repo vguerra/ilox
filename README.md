@@ -17,13 +17,21 @@ This implementation supports the following:
 * Grouping of expressions via parentheses
 
 ```
-expression -> literal 
-            | unary 
-            | binary 
-            | grouping ; 
-literal    -> NUMBER | STRING | "true" | "false" | "nil" ; 
-grouping   -> "(" expression ")" ; 
-unary      -> ( "-" | "!" ) expression ; 
-binary     -> expression operator expression ; 
-operator   -> "==" | "!=" | "<" | "<=" | ">" | ">=" | "+" | "-" | "*" | "/" ; 
+; Grammar for Lox.
+
+expression  = grouping / unary / binary / literal
+
+grouping    = "(" expression ")"
+
+unary       = ("-" / "!") expression
+
+binary      = expression operator expression
+
+operator    = "==" / "!=" / "<" / "<=" / ">" /
+              ">=" / "+" / "-" / "*" / "/"
+
+literal     = 1*DIGIT"."1*DIGIT / 1*ALPHA /
+              "true" / "false" / "nil"
 ```
+
+Find the definition in the [lox.abnf](grammar/lox.abnf) file.

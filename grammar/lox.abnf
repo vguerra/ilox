@@ -1,15 +1,15 @@
 ; Grammar for Lox.
 
-expression	= grouping / unary / binary / literal
+expression  = grouping / unary / binary / literal
 
-grouping	= "(" expression ")"
+grouping    = "(" expression ")"
 
-unary		= ("-" / "!") expression
+unary       = ("-" / "!") expression
 
-binary		= expression operator expression
+binary      = expression operator expression
 
-operator	= "==" / "!=" / "<" / "<=" / ">" /
-		  ">=" / "+" / "-" / "*" / "/"
+operator    = "==" / "!=" / "<" / "<=" / ">" /
+              ">=" / "+" / "-" / "*" / "/"
 
-literal		= 1*DIGIT"."1*DIGIT / 1*ALPHA / 
-		  "true" / "false" / "nil"
+literal     = 1*DIGIT"."1*DIGIT / 1*ALPHA /
+              "true" / "false" / "nil"
