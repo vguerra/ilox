@@ -19,19 +19,36 @@ This implementation supports the following:
 ```
 ; Grammar for Lox.
 
-expression  = grouping / unary / binary / literal
+expression  = factor
 
-grouping    = "(" expression ")"
+equality    = comparison *( ( "!=" / "==" ) comparison )
 
-unary       = ("-" / "!") expression
+comparison  = term *( ( ">" / ">=" / "<" / "<=" ) term )
 
-binary      = expression operator expression
+term        = factor *( ( "-" / "+" ) factor )
 
-operator    = "==" / "!=" / "<" / "<=" / ">" /
-              ">=" / "+" / "-" / "*" / "/"
+factor      = unary *( ( "/" / "*" ) unary )
 
-literal     = 1*DIGIT"."1*DIGIT / 1*ALPHA /
-              "true" / "false" / "nil"
+unary       = ( "-" / "!" ) unary / primary
+
+primary     = 1*DIGIT "." 1*DIGIT / 1*ALPHA /
+              "true" / "false" / "nil" / "(" expression ")"
 ```
 
-Find the definition in the [lox.abnf](grammar/lox.abnf) file.
+Find the definition in the [lox.abnf](grammar/lox.abnf) file. 
+
+A graphical representation.
+
+![](grammar/lox.png)
+
+#### Operator Associativity
+
+To avoid ambiguity during parsing of expressions, we define the associativity of some binary operators.
+
+| **Operator family** | **Operators** | **Associates** |
+|-----------------|-----------|------------|
+| Equality        | == !=     | Left       |
+| Comparison      | > >= < <= | Left       |
+| Term            | - +       | Left       |
+| Factor          | / *       | Left       |
+| Unary           | ! -       | Right      |

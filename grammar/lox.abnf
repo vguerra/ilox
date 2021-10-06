@@ -1,15 +1,17 @@
 ; Grammar for Lox.
+; To generate png: ./bin/kgt -l abnf -e svg < /usr/local/swift/lox/ilox/grammar/lox.abnf | isvg -o lox.png
 
-expression  = grouping / unary / binary / literal
+expression  = factor
 
-grouping    = "(" expression ")"
+equality    = comparison *( ( "!=" / "==" ) comparison )
 
-unary       = ("-" / "!") expression
+comparison  = term *( ( ">" / ">=" / "<" / "<=" ) term )
 
-binary      = expression operator expression
+term        = factor *( ( "-" / "+" ) factor )
 
-operator    = "==" / "!=" / "<" / "<=" / ">" /
-              ">=" / "+" / "-" / "*" / "/"
+factor      = unary *( ( "/" / "*" ) unary )
 
-literal     = 1*DIGIT"."1*DIGIT / 1*ALPHA /
-              "true" / "false" / "nil"
+unary       = ( "-" / "!" ) unary / primary
+
+primary     = 1*DIGIT "." 1*DIGIT / 1*ALPHA /
+              "true" / "false" / "nil" / "(" expression ")"
