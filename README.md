@@ -40,7 +40,7 @@ Find the definition in the [lox.abnf](grammar/lox.abnf) file.
 A graphical representation.
 
 <div style="background-color:white">
-![Lox grammar](grammar/lox.png "Lox Grammar")
+![Lox grammar](grammar/lox.png)
 </div>
 
 #### Operator Associativity
