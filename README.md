@@ -39,9 +39,9 @@ Find the definition in the [lox.abnf](grammar/lox.abnf) file.
 
 A graphical representation.
 
-<div style="background-color:white">
-![Lox grammar](grammar/lox.png)
-</div>
+<img src="grammar/lox.png"
+     alt="Markdown Monster icon"
+     style="float: left; margin-right: 10px; background-color: white" />
 
 #### Operator Associativity
 
