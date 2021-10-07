@@ -6,7 +6,7 @@
 //
 
 /// Tokens that are accepted by the language.
-enum TokenType {
+enum TokenType: Comparable {
     // Single-character tokens.
     case LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE, COMMA,
     DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR
