@@ -15,7 +15,7 @@ enum TokenType: Comparable {
     case BANG, BANG_EQUAL, EQUAL, EQUAL_EQUAL, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL
     
     // Literals
-    case IDENTIFIER(String), STRING(String), NUMBER(Double)
+    case IDENTIFIER, STRING, NUMBER
     
     // Keywords
     case AND, CLASS, ELSE, FALSE, FUN, FOR, IF, NIL, OR, PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE, EOF

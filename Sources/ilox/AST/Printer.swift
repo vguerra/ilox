@@ -21,10 +21,10 @@ class ASTPrinter : Visitor {
     }
 
     func visitExprLiteral(expr: Literal) -> String {
-        if (expr.value == nil) {
-            return "nil"
+        if let val = expr.value {
+            return "\(val)"
         }
-        return "\(expr.value)"
+        return "nil"
     }
 
     func visitExprUnary(expr: Unary) -> String {

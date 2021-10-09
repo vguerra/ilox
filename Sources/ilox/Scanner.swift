@@ -116,7 +116,7 @@ class Scanner {
         advance()
         
         let value = source[(start + 1)...(current - 2)]
-        addTokenOf(type: .STRING(String(value)))
+        addTokenOf(type: .STRING, with: value as AnyObject)
     }
         
     private func consumeNumber() {
@@ -129,7 +129,8 @@ class Scanner {
         while(Scanner.isDigit(peek())) {
             advance()
         }
-        addTokenOf(type: .NUMBER(Double(String(source[start...current]))!))
+        addTokenOf(type: .NUMBER,
+                   with: Double(String(source[start...current]))! as AnyObject)
     }
     
     private func consumeIdentifier() {
@@ -140,7 +141,7 @@ class Scanner {
         if let keywordType = Scanner.keywords[text] {
             addTokenOf(type: keywordType)
         } else {
-            addTokenOf(type: .IDENTIFIER(text))
+            addTokenOf(type: .IDENTIFIER)
         }
     }
     
