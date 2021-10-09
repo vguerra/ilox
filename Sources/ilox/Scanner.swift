@@ -110,7 +110,7 @@ class Scanner {
         }
         
         if (isAtEnd) {
-            Error.error(line: line, message: "Unterminated string.")
+            ErrorUtil.error(line: line, message: "Unterminated string.")
             return
         }
         advance()
@@ -189,7 +189,7 @@ class Scanner {
                     advance()
                 }
                 if (nestedComments != 0) {
-                    Error.error(line: line, message: "Unterminated comment(*/)")
+                    ErrorUtil.error(line: line, message: "Unterminated comment(*/)")
                     break;
                 }
             } else {
@@ -215,7 +215,7 @@ class Scanner {
             } else if (Scanner.isAlpha(c)) {
                 consumeIdentifier()
             } else {
-                Error.error(line: line, message: "Unrecognized character: '\(c)'")
+                ErrorUtil.error(line: line, message: "Unrecognized character: '\(c)'")
                 break;
             }
         }

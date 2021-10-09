@@ -7,9 +7,17 @@
 
 import Foundation
 
-enum Error {
-    static func error(line: Int, message:String) {
+enum ErrorUtil {
+    static func error(line: Int, message: String) {
         report(line: line, within: "", message: message)
+    }
+
+    static func error(token: Token, message: String) {
+        if (token.type == TokenType.EOF) {
+            report(line: token.line, within: " at end", message: message)
+        } else {
+            report(line: token.line, within: "at '\(token.lexeme)'", message: message)
+        }
     }
 
     static func report(line: Int, within location: String, message: String) {
