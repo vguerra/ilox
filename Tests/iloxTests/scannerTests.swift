@@ -37,7 +37,7 @@ final class scannerTests: XCTestCase {
 
     func testScanningStrings() throws {
         XCTAssert(fileCheckOutput(withPrefixes: ["STR_TOKENS"], options: .disableColors) {
-            // STR_TOKENS: STRING("Ta Tb") "Ta Tb" nil
+            // STR_TOKENS: STRING "Ta Tb" Optional(Ta Tb)
             // STR_TOKENS-NEXT: EOF  nil
             loxInterpreter.run(code: "\"Ta Tb\"")
         })
@@ -45,7 +45,7 @@ final class scannerTests: XCTestCase {
 
     func testScanningNumbers() throws {
         XCTAssert(fileCheckOutput(withPrefixes: ["NUM_TOKENS"], options: .disableColors) {
-            // NUM_TOKENS: NUMBER(3.14) 3.14 nil
+            // NUM_TOKENS: NUMBER 3.14 Optional(3.14)
             // NUM_TOKENS-NEXT: EOF  nil
             loxInterpreter.run(code: "3.14")
         })
@@ -63,7 +63,7 @@ final class scannerTests: XCTestCase {
     
     func testScanningIdentifiers() throws {
         XCTAssert(fileCheckOutput(withPrefixes: ["IDENTIFIER_TOKENS"], options: .disableColors) {
-            // IDENTIFIER_TOKENS: IDENTIFIER("thisIsAnIdentifier") thisIsAnIdentifier nil
+            // IDENTIFIER_TOKENS: IDENTIFIER thisIsAnIdentifier nil
             // IDENTIFIER_TOKENS-NEXT: EOF  nil
             loxInterpreter.run(code: "thisIsAnIdentifier")
         })
