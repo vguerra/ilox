@@ -7,16 +7,23 @@
 
 import Darwin
 
+struct CompilingPhases : OptionSet {
+    let rawValue: Int
+
+    static let scan = CompilingPhases(rawValue: 1 << 0)
+    static let parse = CompilingPhases(rawValue: 1 << 1)
+    static let allPhases = CompilingPhases(rawValue: 1 << 2)
+}
+
 struct Lox {
     private static var hadError: Bool = false
-    
-    func runFile(from path:String) {
-    
+
+    func runFile(from path:String, with phases: CompilingPhases) {
         if (Lox.hadError) {
             exit(65)
         }
     }
-    
+
     func runPrompt() {
         print("Welcome to ilox interpreter, what can I run for you today?")
         while true {
@@ -26,18 +33,21 @@ struct Lox {
                 print("\nBye!")
                 break
             }
-            run(code: line)
+            run(code: line, with: .allPhases)
             Lox.hadError = false
         }
         
     }
-    
-    func run(code input: String) {
+
+    func run(code input: String, with phases: CompilingPhases) {
         let scanner = Scanner(source: input)
         let tokens = scanner.scan()
-        
-        for token in tokens {
-            print(token)
+
+        if phases.contains(.scan) {
+            for token in tokens {
+                print(token)
+            }
+            return
         }
     }
 }

@@ -9,7 +9,7 @@ final class scannerTests: XCTestCase {
         XCTAssert(fileCheckOutput(withPrefixes: ["1CTOKENS"], options: .disableColors) {
             // 1CTOKENS: EQUAL = nil
             // 1CTOKENS-NEXT: EOF  nil
-            loxInterpreter.run(code: "=")
+            loxInterpreter.run(code: "=", with: .scan)
         })
     }
 
@@ -18,7 +18,7 @@ final class scannerTests: XCTestCase {
             // 2CTOKENS-NOT: EQUAL = nil
             // 2CTOKENS: EQUAL_EQUAL == nil
             // 2CTOKENS-NEXT: EOF  nil
-            loxInterpreter.run(code: "==")
+            loxInterpreter.run(code: "==", with: .scan)
         })
     }
 
@@ -31,7 +31,7 @@ final class scannerTests: XCTestCase {
             // var != < this as well
             ==
             """
-            loxInterpreter.run(code: code)
+            loxInterpreter.run(code: code, with: .scan)
         })
     }
 
@@ -39,7 +39,7 @@ final class scannerTests: XCTestCase {
         XCTAssert(fileCheckOutput(withPrefixes: ["STR_TOKENS"], options: .disableColors) {
             // STR_TOKENS: STRING "Ta Tb" Optional(Ta Tb)
             // STR_TOKENS-NEXT: EOF  nil
-            loxInterpreter.run(code: "\"Ta Tb\"")
+            loxInterpreter.run(code: "\"Ta Tb\"", with: .scan)
         })
     }
 
@@ -47,7 +47,7 @@ final class scannerTests: XCTestCase {
         XCTAssert(fileCheckOutput(withPrefixes: ["NUM_TOKENS"], options: .disableColors) {
             // NUM_TOKENS: NUMBER 3.14 Optional(3.14)
             // NUM_TOKENS-NEXT: EOF  nil
-            loxInterpreter.run(code: "3.14")
+            loxInterpreter.run(code: "3.14", with: .scan)
         })
     }
 
@@ -57,7 +57,7 @@ final class scannerTests: XCTestCase {
             // KEYWORD_TOKENS-NEXT: FOR for nil
             // KEYWORD_TOKENS-NEXT: WHILE while nil
             // KEYWORD_TOKENS-NEXT: EOF  nil
-            loxInterpreter.run(code: "class for while")
+            loxInterpreter.run(code: "class for while", with: .scan)
         })
     }
     
@@ -65,7 +65,7 @@ final class scannerTests: XCTestCase {
         XCTAssert(fileCheckOutput(withPrefixes: ["IDENTIFIER_TOKENS"], options: .disableColors) {
             // IDENTIFIER_TOKENS: IDENTIFIER thisIsAnIdentifier nil
             // IDENTIFIER_TOKENS-NEXT: EOF  nil
-            loxInterpreter.run(code: "thisIsAnIdentifier")
+            loxInterpreter.run(code: "thisIsAnIdentifier", with: .scan)
         })
     }
 
@@ -73,12 +73,12 @@ final class scannerTests: XCTestCase {
         // One line comment
         XCTAssert(fileCheckOutput(withPrefixes: ["CCOMM_TOKENS"], options: .disableColors) {
             // CCOMM_TOKENS: EOF  nil
-            loxInterpreter.run(code: "/* this is a comment var class */")
+            loxInterpreter.run(code: "/* this is a comment var class */", with: .scan)
         })
 
         XCTAssert(fileCheckOutput(of: .stderr, withPrefixes: ["CCOMM2_TOKENS"], options: .disableColors) {
             // CCOMM2_TOKENS: [line 1] Error : Unterminated comment
-            loxInterpreter.run(code: "/* comm")
+            loxInterpreter.run(code: "/* comm", with: .scan)
         })
 
         XCTAssert(fileCheckOutput(withPrefixes: ["CCOMM3_TOKENS"], options: .disableColors) {
@@ -87,7 +87,7 @@ final class scannerTests: XCTestCase {
             end of comment */
             """
             // CCOMM3_TOKENS: EOF  nil
-            loxInterpreter.run(code: multilineCode)
+            loxInterpreter.run(code: multilineCode, with: .scan)
         })
 
         XCTAssert(fileCheckOutput(of: .stderr, withPrefixes: ["CCOMM4_TOKENS"], options: .disableColors) {
@@ -96,7 +96,7 @@ final class scannerTests: XCTestCase {
             end of comment */
             """
             // CCOMM4_TOKENS: [line 2] Error : Unterminated comment
-            loxInterpreter.run(code: multilineCode)
+            loxInterpreter.run(code: multilineCode, with: .scan)
         })
 
     }
