@@ -130,7 +130,7 @@ class Scanner {
             advance()
         }
         addTokenOf(type: .NUMBER,
-                   with: Double(String(source[start...current]))! as AnyObject)
+                   with: Double(String(source[start...current-1]))! as AnyObject)
     }
     
     private func consumeIdentifier() {
