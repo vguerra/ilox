@@ -17,6 +17,9 @@ private struct LoxCommand : ParsableCommand {
     @Flag(help: "Emit the tokens produced by the scanner.")
     var emitTokens:  Bool = false
 
+    @Flag(help: "Emit the AST produced by the parser.")
+    var emitAST: Bool = false
+
     mutating func validate() throws {
         guard sourceFilePath.isEmpty || FileManager.default.fileExists(atPath: sourceFilePath) else {
             throw ValidationError("Source file path provided \(sourceFilePath) does not exists.")
@@ -27,6 +30,8 @@ private struct LoxCommand : ParsableCommand {
         var compilingPhases: CompilingPhases = []
         if (emitTokens) {
             compilingPhases.update(with: .scan)
+        } else if (emitAST) {
+            compilingPhases.update(with: .parse)
         } else {
             compilingPhases.update(with: .allPhases)
         }
@@ -36,7 +41,6 @@ private struct LoxCommand : ParsableCommand {
         } else {
             loxInterpreter.runPrompt()
         }
-        
     }
 }
 

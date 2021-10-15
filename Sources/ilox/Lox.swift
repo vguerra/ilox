@@ -49,5 +49,16 @@ struct Lox {
             }
             return
         }
+
+        let parser = Parser(tokens)
+        let expression = parser.parse()
+
+        if (Lox.hadError) {
+            return
+        }
+
+        if phases.contains(.parse) {
+            print(ASTPrinter().print(expr: expression!))
+        }
     }
 }
