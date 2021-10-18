@@ -19,7 +19,7 @@ This implementation supports the following:
 ```
 ; Grammar for Lox.
 
-expression  = factor
+expression  = equality
 
 equality    = comparison *( ( "!=" / "==" ) comparison )
 

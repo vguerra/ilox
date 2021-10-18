@@ -1,7 +1,7 @@
 ; Grammar for Lox.
-; To generate png: ./bin/kgt -l abnf -e svg < /usr/local/swift/lox/ilox/grammar/lox.abnf | isvg -o lox.png
+; To generate png: ./bin/kgt -l abnf -e svg < /usr/local/swift/lox/ilox/grammar/lox.abnf | isvg -b white -o lox.png
 
-expression  = factor
+expression  = equality
 
 equality    = comparison *( ( "!=" / "==" ) comparison )
 
