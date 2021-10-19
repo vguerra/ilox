@@ -19,7 +19,7 @@ final class Parser {
 
     func parse() -> Expr? {
         do {
-            return try expression()
+            return try expressionBlock()
         } catch is ParseError {
             return nil;
         }
@@ -66,6 +66,18 @@ final class Parser {
     }
 
     // MARK: Parsing of grammar, each rule represented by one method.
+
+    private func expressionBlock() -> Expr {
+        var expr: Expr = expression()
+
+        while (match(.COMMA)) {
+            let tail = expressionBlock()
+            expr = ExprBlock(head: expr, tail: tail)
+        }
+
+        return expr
+    }
+
     private func expression() -> Expr {
         return equality();
     }
