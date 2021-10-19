@@ -12,6 +12,9 @@ class ASTPrinter : Visitor {
         return expr.accept(visitor: self)
     }
 
+    func visitExprExprBlock(expr: ExprBlock) -> String {
+        return parenthesize(name: "expr-block", expr.head, expr.tail)
+    }
     func visitExprBinary(expr: Binary) -> String {
         return parenthesize(name: expr.op.lexeme, expr.left, expr.right)
     }

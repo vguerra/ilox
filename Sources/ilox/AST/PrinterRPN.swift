@@ -8,6 +8,10 @@
 class ASTPrinterRPN : Visitor {
     typealias Return = String
 
+    func visitExprExprBlock(expr: ExprBlock) -> String {
+        return parenthesize(name: "expr-block", expr.head, expr.tail)
+    }
+
     func print(expr: Expr) -> String {
         return expr.accept(visitor: self)
     }
