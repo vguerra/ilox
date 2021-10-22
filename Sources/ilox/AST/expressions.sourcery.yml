@@ -6,10 +6,6 @@ output: "."
 args:
   baseName: "Expr"
   types: [
-    "ExprBlock": [
-       "Expr": "head",
-       "Expr": "tail"
-    ],
     "Binary": [
       "Expr": "left",
       "Token": "op",
