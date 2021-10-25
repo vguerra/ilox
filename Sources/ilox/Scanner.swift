@@ -157,8 +157,10 @@ class Scanner {
         case ".": addTokenOf(type: .DOT); break;
         case "-": addTokenOf(type: .MINUS); break;
         case "+": addTokenOf(type: .PLUS); break;
+        case ":": addTokenOf(type: .COLON); break;
         case ";": addTokenOf(type: .SEMICOLON); break;
         case "*": addTokenOf(type: .STAR); break;
+        case "?": addTokenOf(type: .QUESTION_MARK); break;
         case "!": addTokenOf(type: match(expected: "=") ? .BANG_EQUAL : .BANG); break;
         case "=": addTokenOf(type: match(expected: "=") ? .EQUAL_EQUAL : .EQUAL); break;
         case "<": addTokenOf(type: match(expected: "=") ? .LESS_EQUAL : .LESS); break;

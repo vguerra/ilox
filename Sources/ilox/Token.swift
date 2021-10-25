@@ -9,7 +9,7 @@
 enum TokenType: Comparable {
     // Single-character tokens.
     case LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE, COMMA,
-    DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR
+    DOT, MINUS, PLUS, COLON, SEMICOLON, SLASH, STAR, QUESTION_MARK
     
     // One or two character tokens.
     case BANG, BANG_EQUAL, EQUAL, EQUAL_EQUAL, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL
