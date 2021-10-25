@@ -8,8 +8,10 @@ final class scannerTests: XCTestCase {
     func testScanning1CharTokens() throws {
         XCTAssert(fileCheckOutput(withPrefixes: ["1CTOKENS"], options: .disableColors) {
             // 1CTOKENS: EQUAL = nil
+            // 1CTOKENS: QUESTION_MARK ? nil
+            // 1CTOKENS: COLON : nil
             // 1CTOKENS-NEXT: EOF  nil
-            loxInterpreter.run(code: "=", with: .scan)
+            loxInterpreter.run(code: "= ? :", with: .scan)
         })
     }
 
@@ -98,7 +100,6 @@ final class scannerTests: XCTestCase {
             // CCOMM4_TOKENS: [line 2] Error : Unterminated comment
             loxInterpreter.run(code: multilineCode, with: .scan)
         })
-
     }
 
 #if !os(macOS)
