@@ -12,6 +12,14 @@ class ASTPrinterRPN : Visitor {
         return parenthesize(name: "expr-block", expr.head, expr.tail)
     }
 
+    func visitExprTernaryOp(expr: TernaryOp) -> String {
+        return parenthesize(
+            name: "ternary",
+            expr.condition,
+            expr.thenExpr,
+            expr.elseExpr)
+    }
+
     func print(expr: Expr) -> String {
         return expr.accept(visitor: self)
     }

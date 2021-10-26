@@ -15,6 +15,15 @@ class ASTPrinter : Visitor {
     func visitExprExprBlock(expr: ExprBlock) -> String {
         return parenthesize(name: "expr-block", expr.head, expr.tail)
     }
+
+    func visitExprTernaryOp(expr: TernaryOp) -> String {
+        return parenthesize(
+            name: "ternary",
+            expr.condition,
+            expr.thenExpr,
+            expr.elseExpr)
+    }
+
     func visitExprBinary(expr: Binary) -> String {
         return parenthesize(name: expr.op.lexeme, expr.left, expr.right)
     }
