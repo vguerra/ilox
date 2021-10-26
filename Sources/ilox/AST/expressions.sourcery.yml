@@ -10,6 +10,11 @@ args:
        "Expr": "head",
        "Expr": "tail"
     ],
+    "TernaryOp": [
+        "Expr": "condition",
+        "Expr": "thenExpr",
+        "Expr": "elseExpr"
+    ],
     "Binary": [
       "Expr": "left",
       "Token": "op",

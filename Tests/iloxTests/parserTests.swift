@@ -26,10 +26,22 @@ final class basicTest: XCTestCase {
         })
     }
 
+    func testTernaryOperator() throws {
+        XCTAssert(fileCheckOutput(withPrefixes: ["TERNARY_OP"], options: .disableColors) {
+            // TERNARY_OP: (ternary (> 2 3) 1 2)
+            loxInterpreter.run(code: "2 > 3 ? 1 : 2", with: .parse)
+            // TERNARY_OP: (ternary (> 2 3) 1 (ternary (< 1 2) 10 12))
+            loxInterpreter.run(code: "2 > 3 ? 1 : 1 < 2 ? 10 : 12", with: .parse)
+            // TERNARY_OP: (ternary (> 2 3) (ternary (< 1 2) 10 12) 1)
+            loxInterpreter.run(code: "2 > 3 ? 1 < 2 ? 10 : 12 : 1", with: .parse)
+        })
+    }
+
 #if !os(macOS)
     static var allTests = testCase([
         ("testPrettyPrinter", testPrettyPrinter),
-        ("testExprBlock", testExprBlock)
+        ("testExprBlock", testExprBlock),
+        ("testTernaryOperator", testTernaryOperator)
     ])
 #endif
 }

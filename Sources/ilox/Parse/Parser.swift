@@ -79,7 +79,18 @@ final class Parser {
     }
 
     private func expression() -> Expr {
-        return equality();
+        var expr = equality();
+
+        // TODO: handle errors for ternary op syntax.
+        if (match(.QUESTION_MARK)) {
+            var thenExpr = expression()
+            if (match(.COLON)) {
+                var elseExpr = expression()
+                return TernaryOp(condition: expr, thenExpr: thenExpr, elseExpr: elseExpr)
+            }
+        }
+
+        return expr;
     }
 
     private func equality() -> Expr {

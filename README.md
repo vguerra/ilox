@@ -49,10 +49,11 @@ To avoid ambiguity during parsing of expressions, we define the associativity of
 As well, the table lists the operators in order of precedence, from lower to higher.
 
 | **Operator family** | **Operators** | **Associates** |
-|-----------------|-----------|------------|
-| Block           | ,         | Left       |
-| Equality        | == !=     | Left       |
-| Comparison      | > >= < <= | Left       |
-| Term            | - +       | Left       |
-| Factor          | / *       | Left       |
-| Unary           | ! -       | Right      |
+|---------------------|---------------|----------------|
+| Block               | ,             | Left           |
+| Ternary condition   | ? :           | Right          |
+| Equality            | == !=         | Left           |
+| Comparison          | > >= < <=     | Left           |
+| Term                | - +           | Left           |
+| Factor              | / *           | Left           |
+| Unary               | ! -           | Right          |
