@@ -1,9 +1,11 @@
 ; Grammar for Lox.
 ; To generate png: ./bin/kgt -l abnf -e svg < /usr/local/swift/lox/ilox/grammar/lox.abnf | isvg -b white -o lox.png
 
-expressionblock     = expression *( "," expressionblock )
+expression          = expressionBlock
 
-expression          = equality *( "?" expression ":" expression)
+expressionBlock     = conditional *( "," expressionBlock)
+
+conditional         = equality *1( "?" expression ":" conditional )
 
 equality            = comparison *( ( "!=" / "==" ) comparison )
 

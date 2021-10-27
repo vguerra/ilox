@@ -19,7 +19,7 @@ final class Parser {
 
     func parse() -> Expr? {
         do {
-            return try expressionBlock()
+            return try expression()
         } catch is ParseError {
             return nil;
         }
@@ -65,10 +65,13 @@ final class Parser {
         return peek().type == type
     }
 
-    // MARK: Parsing of grammar, each rule represented by one method.
+    // MARK: Parsing of grammar, each rule represented by one method
+    private func expression() -> Expr {
+        return expressionBlock()
+    }
 
     private func expressionBlock() -> Expr {
-        var expr: Expr = expression()
+        var expr: Expr = conditional()
 
         while (match(.COMMA)) {
             let tail = expressionBlock()
@@ -78,14 +81,14 @@ final class Parser {
         return expr
     }
 
-    private func expression() -> Expr {
+    private func conditional() -> Expr {
         var expr = equality();
 
         // TODO: handle errors for ternary op syntax.
         if (match(.QUESTION_MARK)) {
             var thenExpr = expression()
             if (match(.COLON)) {
-                var elseExpr = expression()
+                var elseExpr = conditional()
                 return TernaryOp(condition: expr, thenExpr: thenExpr, elseExpr: elseExpr)
             }
         }
