@@ -58,7 +58,9 @@ struct Lox {
         }
 
         if phases.contains(.parse) {
-            print(ASTPrinter().print(expr: expression!))
+            if let parsedExpr = expression {
+                print(ASTPrinter().print(expr: parsedExpr))
+            }
         }
     }
 }

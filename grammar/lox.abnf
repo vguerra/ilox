@@ -18,4 +18,9 @@ factor              = unary *( ( "/" / "*" ) unary )
 unary               = ( "-" / "!" ) unary / primary
 
 primary             = 1*DIGIT "." 1*DIGIT / 1*ALPHA /
-                    "true" / "false" / "nil" / "(" expression ")"
+                    "true" / "false" / "nil" / "(" expression ")" /
+                    ; START OF ERROR PRODUCTIONS
+                    ( "!=" / "==" ) comparison /
+                    ( ">" / ">=" / "<" / "<=" ) term /
+                    ( "-" / "+" ) factor /
+                    ( "/" / "*" ) unary
