@@ -37,11 +37,21 @@ final class basicTest: XCTestCase {
         })
     }
 
+    func testErrorMissingLeftOperandBinaryOps() throws {
+        XCTAssert(fileCheckOutput(of: .stderr, withPrefixes: ["LEFTOP_ERROR"], options: .disableColors) {
+            // LEFTOP_ERROR: Error at '>': Missing left hand term for operator.
+            loxInterpreter.run(code: "> 3", with: .parse)
+            // LEFTOP_ERROR: Error at '*': Missing left hand term for operator.
+            loxInterpreter.run(code: "* 1", with: .parse)
+        })
+    }
+
 #if !os(macOS)
     static var allTests = testCase([
         ("testPrettyPrinter", testPrettyPrinter),
         ("testExprBlock", testExprBlock),
-        ("testTernaryOperator", testTernaryOperator)
+        ("testTernaryOperator", testTernaryOperator),
+        ("testErrorMissingLeftOperandBinaryOps", testErrorMissingLeftOperandBinaryOps)
     ])
 #endif
 }

@@ -20,7 +20,7 @@ final class Parser {
     func parse() -> Expr? {
         do {
             return try expression()
-        } catch is ParseError {
+        } catch {
             return nil;
         }
     }
@@ -66,29 +66,29 @@ final class Parser {
     }
 
     // MARK: Parsing of grammar, each rule represented by one method
-    private func expression() -> Expr {
-        return expressionBlock()
+    private func expression() throws -> Expr {
+        return try expressionBlock()
     }
 
-    private func expressionBlock() -> Expr {
-        var expr: Expr = conditional()
+    private func expressionBlock() throws -> Expr {
+        var expr: Expr = try conditional()
 
         while (match(.COMMA)) {
-            let tail = expressionBlock()
+            let tail = try  expressionBlock()
             expr = ExprBlock(head: expr, tail: tail)
         }
 
         return expr
     }
 
-    private func conditional() -> Expr {
-        var expr = equality();
+    private func conditional() throws -> Expr {
+        let expr = try equality();
 
         // TODO: handle errors for ternary op syntax.
         if (match(.QUESTION_MARK)) {
-            var thenExpr = expression()
+            let thenExpr = try expression()
             if (match(.COLON)) {
-                var elseExpr = conditional()
+                let elseExpr = try conditional()
                 return TernaryOp(condition: expr, thenExpr: thenExpr, elseExpr: elseExpr)
             }
         }
@@ -96,62 +96,62 @@ final class Parser {
         return expr;
     }
 
-    private func equality() -> Expr {
-        var expr: Expr = comparison();
+    private func equality() throws -> Expr {
+        var expr: Expr = try comparison();
 
         while (match(.BANG_EQUAL, .EQUAL_EQUAL)) {
             let op: Token = previous();
-            let right: Expr = comparison();
+            let right: Expr = try comparison();
             expr = Binary(left: expr, op: op, right: right)
         }
 
         return expr
     }
 
-    private func comparison() -> Expr {
-        var expr: Expr = term();
+    private func comparison() throws -> Expr {
+        var expr: Expr = try term();
 
         while(match(.GREATER, .GREATER_EQUAL, .LESS, .LESS_EQUAL)) {
             let op: Token = previous()
-            let right: Expr = term();
+            let right: Expr = try term();
             expr = Binary(left: expr, op: op, right: right)
         }
 
         return expr
     }
 
-    private func term() -> Expr {
-        var expr: Expr = factor();
+    private func term() throws -> Expr {
+        var expr: Expr = try factor();
 
         while(match(.MINUS, .PLUS)) {
             let op: Token = previous()
-            let right: Expr = factor()
+            let right: Expr = try factor()
             expr = Binary(left: expr, op: op, right: right)
         }
 
         return expr
     }
 
-    private func factor() -> Expr {
-        var expr: Expr = unary()
+    private func factor() throws -> Expr {
+        var expr: Expr = try unary()
 
         while(match(.SLASH, .STAR)) {
             let op: Token = previous()
-            let right: Expr = unary()
+            let right: Expr = try unary()
             expr = Binary(left: expr, op: op, right: right)
         }
 
         return expr
     }
 
-    private func unary() -> Expr {
+    private func unary() throws -> Expr {
         if (match(.BANG, .MINUS)) {
             let op: Token = previous()
-            let right: Expr = unary()
+            let right: Expr = try unary()
             return Unary(op: op, right: right)
         }
 
-        return try! primary()
+        return try primary()
     }
 
     private func primary() throws -> Expr {
@@ -170,9 +170,35 @@ final class Parser {
         }
 
         if (match(.LEFT_PAREN)) {
-            let expr: Expr = expression()
+            let expr: Expr = try expression()
             try! consume(TokenType.RIGHT_PAREN, "Expect ')' after expression")
             return Grouping(expression: expr)
+        }
+
+        // MARK: Handling Error productions
+
+        if (match(.BANG_EQUAL, .EQUAL_EQUAL)) {
+            let leftOpError = error(previous(), "Missing left hand term for operator.")
+            let _ = try comparison()
+            throw leftOpError
+        }
+
+        if (match(.GREATER, .GREATER_EQUAL, .LESS, .LESS_EQUAL)) {
+            let leftOpError = error(previous(), "Missing left hand term for operator.")
+            let _ = try term()
+            throw leftOpError
+        }
+
+        if (match(.MINUS, .PLUS)) {
+            let leftOpError = error(previous(), "Missing left hand term for operator.")
+            let _ = try factor()
+            throw leftOpError
+        }
+
+        if (match(.SLASH, .STAR)) {
+            let leftOpError = error(previous(), "Missing left hand term for operator.")
+            let _ = try unary()
+            throw leftOpError
         }
 
         throw error(peek(), "Expected expression.")
