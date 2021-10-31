@@ -11,7 +11,7 @@ protocol Visitor {
 
 class {{argument.baseName}} {
     func accept<V: Visitor>(visitor: V) -> V.Return {
-        fatalError("You are not allowed to call `accept` from `Exper` class")
+        fatalError("You are not allowed to call `accept` from `Expr` class")
     }
 }
 {% for typeDef in argument.types %}
