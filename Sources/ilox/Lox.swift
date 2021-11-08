@@ -12,16 +12,22 @@ struct CompilingPhases : OptionSet {
 
     static let scan = CompilingPhases(rawValue: 1 << 0)
     static let parse = CompilingPhases(rawValue: 1 << 1)
-    static let allPhases = CompilingPhases(rawValue: 1 << 2)
+    static let interpret = CompilingPhases(rawValue: 1 << 2)
+    static let allPhases = CompilingPhases(rawValue: 1 << 3)
 }
 
 struct Lox {
     private static var hadError: Bool = false
+    private static var hadRuntimeError = false
 
     func runFile(from path:String, with phases: CompilingPhases) {
         if (Lox.hadError) {
             exit(65)
         }
+        if (Lox.hadRuntimeError) {
+            exit(70)
+        }
+
     }
 
     func runPrompt() {
@@ -60,6 +66,14 @@ struct Lox {
         if phases.contains(.parse) {
             if let parsedExpr = expression {
                 print(ASTPrinter().print(expr: parsedExpr))
+                return
+            }
+        }
+
+        if phases.contains(.interpret) || phases.contains(.allPhases) {
+            if let parsedExpr = expression {
+                let interpreter = Interpreter()
+                interpreter.interpret(expression: parsedExpr)
             }
         }
     }
