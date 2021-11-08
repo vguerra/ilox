@@ -9,7 +9,7 @@ import XCTest
 import FileCheck
 @testable import ilox
 
-final class basicTest: XCTestCase {
+final class parserTests: XCTestCase {
     let loxInterpreter = Lox()
 
     func testPrettyPrinter() throws {
