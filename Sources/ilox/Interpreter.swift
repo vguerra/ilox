@@ -75,9 +75,12 @@ class Interpreter : Visitor {
                 if let unwrappedLeft = left, let unwrappedRight = right {
                     if unwrappedLeft is Double && unwrappedRight is Double {
                         return (unwrappedLeft as! Double) + (unwrappedRight as! Double) as AnyObject
-                    }
-                    if unwrappedLeft is String && unwrappedRight is String {
+                    } else if unwrappedLeft is String && unwrappedRight is String {
                         return (unwrappedLeft as! String) + (unwrappedRight as! String) as AnyObject
+                    } else if unwrappedLeft is String {
+                        return (unwrappedLeft as! String) + String(unwrappedRight as! Double) as AnyObject
+                    } else if unwrappedRight is String {
+                        return String(unwrappedLeft as! Double) + (unwrappedRight as! String) as AnyObject
                     }
 
                     try! throwPlusOperandsError(token: expr.op)
