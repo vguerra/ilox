@@ -12,7 +12,7 @@ import FileCheck
 final class interpreterTests: XCTestCase {
     let loxInterpreter = Lox()
 
-    func numericExpressions() throws {
+    func testNumericExpressions() throws {
         XCTAssert(fileCheckOutput(withPrefixes: ["NUM"], options: .disableColors) {
             // NUM: 5
             loxInterpreter.run(code: "3 + 2", with: .interpret)
@@ -25,18 +25,28 @@ final class interpreterTests: XCTestCase {
         })
     }
 
-    func stringExpressions() throws {
+    func testStringExpressions() throws {
         XCTAssert(fileCheckOutput(withPrefixes: ["STR"], options: .disableColors) {
             // STR: abcd
             loxInterpreter.run(code: "\"ab\" + \"cd\"", with: .interpret)
         })
     }
 
+    func testAddStringAndNumbers() throws {
+        XCTAssert(fileCheckOutput(withPrefixes: ["STR_NUM"], options: .disableColors) {
+            // STR_NUM: 23.3ab
+            loxInterpreter.run(code: "23.3 + \"ab\"", with: .interpret)
+            // STR_NUM: ab23.3
+            loxInterpreter.run(code: "\"ab\" + 23.3", with: .interpret)
+        })
+    }
+
 
 #if !os(macOS)
     static var allTests = testCase([
-        ("numericExpressions", numericExpressions),
-        ("stringExpressions", stringExpressions)
+        ("testNumericExpressions", numericExpressions),
+        ("testStringExpressions", stringExpressions),
+        ("testAddStringAndNumbers", addStringAndNumbers)
     ])
 #endif
 }
