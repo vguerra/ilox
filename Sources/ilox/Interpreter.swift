@@ -17,6 +17,7 @@ class Interpreter : Visitor {
         case OperandNotNumber(token: Token)
         case OperandsNotNumbers(token: Token)
         case OperandsNotNumbersNorStrings(token: Token)
+        case DivisionByZero(token: Token)
     }
 
     typealias Return = AnyObject?
@@ -88,10 +89,14 @@ class Interpreter : Visitor {
                 return nil
             case .SLASH:
                 try! checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
-                return (left as! Double) / Double(right as! Double) as AnyObject
+                let rightOp = right as! Double
+                if rightOp.isZero {
+                    try! throwDivisionByZeroError(token: expr.op)
+                }
+                return (left as! Double) / rightOp as AnyObject
             case .STAR:
                 try! checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
-                return (left as! Double) * Double(right as! Double) as AnyObject
+                return (left as! Double) * (right as! Double) as AnyObject
             default:
                 return nil
         }
@@ -172,6 +177,10 @@ class Interpreter : Visitor {
         throw RuntimeError.OperandsNotNumbersNorStrings(token: token)
     }
 
+    private func throwDivisionByZeroError(token: Token) throws {
+        throw RuntimeError.DivisionByZero(token: token)
+    }
+
 }
 
 extension Interpreter.RuntimeError : LocalizedError {
@@ -183,6 +192,8 @@ extension Interpreter.RuntimeError : LocalizedError {
                 return "Operands must be numbers."
             case .OperandsNotNumbersNorStrings(token: _):
                 return "Operands must be either Numbers or Strings"
+            case .DivisionByZero(token: let tok):
+                return "Division by zero at line: \(tok.line) "
         }
     }
 }
