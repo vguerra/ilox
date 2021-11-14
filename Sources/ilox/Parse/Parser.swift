@@ -5,10 +5,6 @@
 //  Created by Victor Guerra on 07/10/2021.
 //
 
-enum ParseError: Error {
-    case parse
-}
-
 final class Parser {
     let tokens: [Token]
     var current: Int = 0
@@ -66,7 +62,7 @@ final class Parser {
     }
 
     // MARK: Parsing of grammar, each rule represented by one method
-    private func expression() throws -> Expr {
+private func expression() throws -> Expr {
         return try expressionBlock()
     }
 
@@ -213,9 +209,9 @@ final class Parser {
         throw error(peek(), message)
     }
 
-    private func error(_ token: Token, _ message: String) -> ParseError {
+    private func error(_ token: Token, _ message: String) -> LoxError {
         ErrorUtil.error(token: token, message: message)
-        return ParseError.parse
+        return LoxError.parse
     }
 
     private func synchronize() {

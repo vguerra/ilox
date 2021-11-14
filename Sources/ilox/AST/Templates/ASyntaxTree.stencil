@@ -9,8 +9,21 @@ protocol Visitor {
 {% endfor %}
 }
 
+protocol ThrowableVisitor {
+    associatedtype Return
+{% for typeDef in argument.types %}
+    {% for exprType, _ in typeDef %}
+    func visit{{argument.baseName}}{{exprType}}({{argument.baseName|lowercase}}:{{exprType}}) throws -> Return
+    {% endfor %}
+{% endfor %}
+}
+
+
 class {{argument.baseName}} {
     func accept<V: Visitor>(visitor: V) -> V.Return {
+        fatalError("You are not allowed to call `accept` from `Expr` class")
+    }
+    func accept<V: ThrowableVisitor>(visitor: V) throws -> V.Return {
         fatalError("You are not allowed to call `accept` from `Expr` class")
     }
 }
@@ -38,6 +51,9 @@ class {{exprType}} : {{argument.baseName}} {
 
     override func accept<V: Visitor>(visitor: V) -> V.Return {
         return visitor.visit{{argument.baseName}}{{exprType}}(expr: self)
+    }
+    override func accept<V: ThrowableVisitor>(visitor: V) throws -> V.Return {
+        return try visitor.visit{{argument.baseName}}{{exprType}}(expr: self)
     }
 }
     {% endfor %}

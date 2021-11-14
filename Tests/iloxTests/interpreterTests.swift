@@ -41,12 +41,20 @@ final class interpreterTests: XCTestCase {
         })
     }
 
+    func testDivisionByZero() throws {
+        XCTAssert(fileCheckOutput(of: .stderr, withPrefixes: ["DIV_ZERO"], options: .disableColors) {
+            // DIV_ZERO: Division by zero at line: 1
+            loxInterpreter.run(code: "3 / 0", with: .interpret)
+        })
+    }
+
 
 #if !os(macOS)
     static var allTests = testCase([
         ("testNumericExpressions", numericExpressions),
         ("testStringExpressions", stringExpressions),
-        ("testAddStringAndNumbers", addStringAndNumbers)
+        ("testAddStringAndNumbers", addStringAndNumbers),
+        ("testDivisionByZero", testDivisionByZero)
     ])
 #endif
 }
