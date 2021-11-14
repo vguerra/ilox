@@ -11,19 +11,12 @@
 import Foundation
 
 
-class Interpreter : Visitor {
-
-    enum RuntimeError : Error {
-        case OperandNotNumber(token: Token)
-        case OperandsNotNumbers(token: Token)
-        case OperandsNotNumbersNorStrings(token: Token)
-        case DivisionByZero(token: Token)
-    }
+class Interpreter : ThrowableVisitor {
 
     typealias Return = AnyObject?
 
-    func interpret(expression: Expr) {
-        print(stringify(value: evaluate(expr: expression)))
+    func interpret(expression: Expr) throws {
+        print(stringify(value: try evaluate(expr: expression)))
     }
 
     private func stringify(value: AnyObject?) -> String {
@@ -40,37 +33,37 @@ class Interpreter : Visitor {
         return "nil"
     }
 
-    func visitExprExprBlock(expr: ExprBlock) -> AnyObject? {
+    func visitExprExprBlock(expr: ExprBlock) throws -> AnyObject? {
         fatalError("Not yet implemented")
     }
 
-    func visitExprTernaryOp(expr: TernaryOp) -> AnyObject? {
+    func visitExprTernaryOp(expr: TernaryOp) throws -> AnyObject? {
         fatalError("Not yet implemented")
     }
 
-    func visitExprBinary(expr: Binary) -> AnyObject? {
-        let left = evaluate(expr: expr.left)
-        let right = evaluate(expr: expr.right)
+    func visitExprBinary(expr: Binary) throws -> AnyObject? {
+        let left = try evaluate(expr: expr.left)
+        let right = try evaluate(expr: expr.right)
 
         switch expr.op.type {
             case .GREATER:
-                try! checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
+                try checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
                 return ((left as! Double) > (right as! Double)) as AnyObject
             case .GREATER_EQUAL:
-                try! checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
+                try checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
                 return ((left as! Double) >= (right as! Double)) as AnyObject
             case .LESS:
-                try! checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
+                try checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
                 return ((left as! Double) < (right as! Double)) as AnyObject
             case .LESS_EQUAL:
-                try! checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
+                try checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
                 return ((left as! Double) <= (right as! Double)) as AnyObject
             case .BANG_EQUAL:
                 return !isEqual(left: left, right: right) as AnyObject
             case .EQUAL:
                 return isEqual(left: left, right: right) as AnyObject
             case .MINUS:
-                try! checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
+                try checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
                 return (left as! Double) - (right as! Double) as AnyObject
             case .PLUS:
                 if let unwrappedLeft = left, let unwrappedRight = right {
@@ -84,38 +77,42 @@ class Interpreter : Visitor {
                         return String(unwrappedLeft as! Double) + (unwrappedRight as! String) as AnyObject
                     }
 
-                    try! throwPlusOperandsError(token: expr.op)
+                    throw LoxError.runtime(
+                        ofKind: LoxError.Runtime.operandsNotNumbersNorStrings(token: expr.op)
+                    )
                 }
                 return nil
             case .SLASH:
-                try! checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
+                try checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
                 let rightOp = right as! Double
-                if rightOp.isZero {
-                    try! throwDivisionByZeroError(token: expr.op)
+                guard !rightOp.isZero else {
+                    throw LoxError.runtime(
+                        ofKind: LoxError.Runtime.divisionByZero(token: expr.op)
+                    )
                 }
                 return (left as! Double) / rightOp as AnyObject
             case .STAR:
-                try! checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
+                try checkNumberOperands(op: expr.op, leftOperand: left, rightOperand: right)
                 return (left as! Double) * (right as! Double) as AnyObject
             default:
                 return nil
         }
     }
 
-    func visitExprGrouping(expr: Grouping) -> AnyObject? {
-        return evaluate(expr: expr.expression)
+    func visitExprGrouping(expr: Grouping) throws -> AnyObject? {
+        return try evaluate(expr: expr.expression)
     }
 
-    func visitExprLiteral(expr: Literal) -> AnyObject? {
+    func visitExprLiteral(expr: Literal) throws -> AnyObject? {
         return expr.value
     }
 
-    func visitExprUnary(expr: Unary) -> AnyObject? {
-        let right = evaluate(expr: expr.right)
+    func visitExprUnary(expr: Unary) throws -> AnyObject? {
+        let right = try evaluate(expr: expr.right)
 
         switch (expr.op.type) {
             case .MINUS:
-                try! checkNumberOperand(op: expr.op, operand: right)
+                try checkNumberOperand(op: expr.op, operand: right)
                 return -1 * Double(right! as! String)! as AnyObject
             case .BANG:
                 return !isTruthty(object: right) as AnyObject
@@ -124,8 +121,8 @@ class Interpreter : Visitor {
         }
     }
 
-    private func evaluate(expr: Expr) -> AnyObject? {
-        return expr.accept(visitor: self)
+    private func evaluate(expr: Expr) throws -> AnyObject? {
+        return try expr.accept(visitor: self)
     }
 
     // We follow Ruby style: `false` and `nil` are falsey,
@@ -160,7 +157,7 @@ class Interpreter : Visitor {
             }
         }
 
-        throw RuntimeError.OperandNotNumber(token: op)
+        throw LoxError.runtime(ofKind: LoxError.Runtime.operandNotNumber(token: op))
     }
 
     private func checkNumberOperands(op: Token, leftOperand: AnyObject?, rightOperand: AnyObject?) throws {
@@ -170,30 +167,7 @@ class Interpreter : Visitor {
             }
         }
 
-        throw RuntimeError.OperandsNotNumbers(token: op)
+        throw LoxError.runtime(ofKind: LoxError.Runtime.operandsNotNumbers(token: op))
     }
 
-    private func throwPlusOperandsError(token: Token) throws {
-        throw RuntimeError.OperandsNotNumbersNorStrings(token: token)
-    }
-
-    private func throwDivisionByZeroError(token: Token) throws {
-        throw RuntimeError.DivisionByZero(token: token)
-    }
-
-}
-
-extension Interpreter.RuntimeError : LocalizedError {
-    var errorDescription: String? {
-        switch self {
-            case .OperandNotNumber(token: _):
-                return "Operand must be a number."
-            case .OperandsNotNumbers(token: _):
-                return "Operands must be numbers."
-            case .OperandsNotNumbersNorStrings(token: _):
-                return "Operands must be either Numbers or Strings"
-            case .DivisionByZero(token: let tok):
-                return "Division by zero at line: \(tok.line) "
-        }
-    }
 }

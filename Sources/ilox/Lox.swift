@@ -17,11 +17,11 @@ struct CompilingPhases : OptionSet {
 }
 
 struct Lox {
-    private static var hadError: Bool = false
-    private static var hadRuntimeError = false
+    private static var hadParserError: Bool = false
+    private static var hadRuntimeError: Bool = false
 
     func runFile(from path:String, with phases: CompilingPhases) {
-        if (Lox.hadError) {
+        if (Lox.hadParserError) {
             exit(65)
         }
         if (Lox.hadRuntimeError) {
@@ -40,7 +40,6 @@ struct Lox {
                 break
             }
             run(code: line, with: .allPhases)
-            Lox.hadError = false
         }
         
     }
@@ -59,10 +58,6 @@ struct Lox {
         let parser = Parser(tokens)
         let expression = parser.parse()
 
-        if (Lox.hadError) {
-            return
-        }
-
         if phases.contains(.parse) {
             if let parsedExpr = expression {
                 print(ASTPrinter().print(expr: parsedExpr))
@@ -73,7 +68,13 @@ struct Lox {
         if phases.contains(.interpret) || phases.contains(.allPhases) {
             if let parsedExpr = expression {
                 let interpreter = Interpreter()
-                interpreter.interpret(expression: parsedExpr)
+                do {
+                    try interpreter.interpret(expression: parsedExpr)
+                } catch let error as LoxError {
+                    ErrorUtil.runtimeError(rerror: error)
+                } catch {
+                    fatalError("Unexpected interpreter error.")
+                }
             }
         }
     }
