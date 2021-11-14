@@ -45,7 +45,8 @@ A graphical representation.
 
 #### Operator Associativity
 
-To avoid ambiguity during parsing of expressions, we define the associativity of some binary operators.
+To avoid ambiguity during parsing of expressions, we define the associativity of the different
+operators in the language.
 As well, the table lists the operators in order of precedence, from lower to higher.
 
 | **Operator family** | **Operators** | **Associates** |

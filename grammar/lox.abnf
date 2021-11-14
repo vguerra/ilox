@@ -1,6 +1,14 @@
 ; Grammar for Lox.
 ; To generate png: ./bin/kgt -l abnf -e svg < /usr/local/swift/lox/ilox/grammar/lox.abnf | isvg -b white -o lox.png
 
+program             = *statement "EOF"
+
+statement           = expressionStatement / printStatement
+
+printStatement      = "print" expression ";"
+
+expressionStatement = expression ";"
+
 expression          = expressionBlock
 
 expressionBlock     = conditional *( "," expressionBlock)
