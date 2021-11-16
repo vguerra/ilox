@@ -11,7 +11,7 @@
 import Foundation
 
 
-class Interpreter : ThrowableVisitor {
+class Interpreter : ExprThrowableVisitor {
 
     typealias Return = AnyObject?
 
