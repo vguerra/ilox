@@ -5,7 +5,7 @@
 //  Created by Victor Guerra on 27/09/2021.
 //
 
-class ASTPrinterRPN : Visitor {
+class ASTPrinterRPN : ExprVisitor {
     typealias Return = String
 
     func visitExprExprBlock(expr: ExprBlock) -> String {

@@ -5,7 +5,7 @@
 //  Created by Victor Guerra on 27/09/2021.
 //
 
-class ASTPrinter : Visitor {
+class ASTPrinter : ExprVisitor {
     typealias Return = String
 
     func print(expr: Expr) -> String {

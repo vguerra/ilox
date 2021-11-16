@@ -2,7 +2,7 @@ sources:
   - "."
 templates:
   - "Templates"
-output: "."
+output: "./Expr.generated.swift"
 args:
   baseName: "Expr"
   types: [
