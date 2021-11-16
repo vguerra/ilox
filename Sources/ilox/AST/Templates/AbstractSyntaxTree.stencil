@@ -4,7 +4,7 @@ protocol {{argument.baseName}}Visitor {
     associatedtype Return
 {% for typeDef in argument.types %}
     {% for exprType, _ in typeDef %}
-    func visit{{argument.baseName}}{{exprType}}({{argument.baseName|lowercase}}:{{exprType}}) -> Return
+    func visit{{argument.baseName}}{{exprType}}({{argument.baseName|lowercase}}: {{exprType}}) -> Return
     {% endfor %}
 {% endfor %}
 }
@@ -13,7 +13,7 @@ protocol {{argument.baseName}}ThrowableVisitor {
     associatedtype Return
 {% for typeDef in argument.types %}
     {% for exprType, _ in typeDef %}
-    func visit{{argument.baseName}}{{exprType}}({{argument.baseName|lowercase}}:{{exprType}}) throws -> Return
+    func visit{{argument.baseName}}{{exprType}}({{argument.baseName|lowercase}}: {{exprType}}) throws -> Return
     {% endfor %}
 {% endfor %}
 }
@@ -50,10 +50,10 @@ class {{exprType}} : {{argument.baseName}} {
     }
 
     override func accept<V: {{argument.baseName}}Visitor>(visitor: V) -> V.Return {
-        return visitor.visit{{argument.baseName}}{{exprType}}(expr: self)
+        return visitor.visit{{argument.baseName}}{{exprType}}({{argument.baseName|lowercase}}: self)
     }
     override func accept<V: {{argument.baseName}}ThrowableVisitor>(visitor: V) throws -> V.Return {
-        return try visitor.visit{{argument.baseName}}{{exprType}}(expr: self)
+        return try visitor.visit{{argument.baseName}}{{exprType}}({{argument.baseName|lowercase}}: self)
     }
 }
     {% endfor %}
