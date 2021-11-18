@@ -6,7 +6,7 @@
 //
 
 class ASTPrinterRPN : ExprVisitor {
-    typealias Return = String
+    typealias ExprReturn = String
 
     func visitExprExprBlock(expr: ExprBlock) -> String {
         return parenthesize(name: "expr-block", expr.head, expr.tail)

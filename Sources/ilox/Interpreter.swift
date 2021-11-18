@@ -13,7 +13,7 @@ import Foundation
 
 class Interpreter : ExprThrowableVisitor {
 
-    typealias Return = AnyObject?
+    typealias ExprReturn = AnyObject?
 
     func interpret(expression: Expr) throws {
         print(stringify(value: try evaluate(expr: expression)))

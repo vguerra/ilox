@@ -1,29 +1,29 @@
 // Automated definitions for {{argument.baseName}}
 
 protocol {{argument.baseName}}Visitor {
-    associatedtype Return
+    associatedtype {{argument.baseName}}Return
 {% for typeDef in argument.types %}
     {% for exprType, _ in typeDef %}
-    func visit{{argument.baseName}}{{exprType}}({{argument.baseName|lowercase}}: {{exprType}}) -> Return
+    func visit{{argument.baseName}}{{exprType}}({{argument.baseName|lowercase}}: {{exprType}}) -> {{argument.baseName}}Return
     {% endfor %}
 {% endfor %}
 }
 
 protocol {{argument.baseName}}ThrowableVisitor {
-    associatedtype Return
+    associatedtype {{argument.baseName}}Return
 {% for typeDef in argument.types %}
     {% for exprType, _ in typeDef %}
-    func visit{{argument.baseName}}{{exprType}}({{argument.baseName|lowercase}}: {{exprType}}) throws -> Return
+    func visit{{argument.baseName}}{{exprType}}({{argument.baseName|lowercase}}: {{exprType}}) throws -> {{argument.baseName}}Return
     {% endfor %}
 {% endfor %}
 }
 
 
 class {{argument.baseName}} {
-    func accept<V: {{argument.baseName}}Visitor>(visitor: V) -> V.Return {
+    func accept<V: {{argument.baseName}}Visitor>(visitor: V) -> V.{{argument.baseName}}Return {
         fatalError("You are not allowed to call `accept` from `Expr` class")
     }
-    func accept<V: {{argument.baseName}}ThrowableVisitor>(visitor: V) throws -> V.Return {
+    func accept<V: {{argument.baseName}}ThrowableVisitor>(visitor: V) throws -> V.{{argument.baseName}}Return {
         fatalError("You are not allowed to call `accept` from `Expr` class")
     }
 }
@@ -49,10 +49,10 @@ class {{exprType}} : {{argument.baseName}} {
         {% endfor %}
     }
 
-    override func accept<V: {{argument.baseName}}Visitor>(visitor: V) -> V.Return {
+    override func accept<V: {{argument.baseName}}Visitor>(visitor: V) -> V.{{argument.baseName}}Return {
         return visitor.visit{{argument.baseName}}{{exprType}}({{argument.baseName|lowercase}}: self)
     }
-    override func accept<V: {{argument.baseName}}ThrowableVisitor>(visitor: V) throws -> V.Return {
+    override func accept<V: {{argument.baseName}}ThrowableVisitor>(visitor: V) throws -> V.{{argument.baseName}}Return {
         return try visitor.visit{{argument.baseName}}{{exprType}}({{argument.baseName|lowercase}}: self)
     }
 }

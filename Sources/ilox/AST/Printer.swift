@@ -6,7 +6,7 @@
 //
 
 class ASTPrinter : ExprVisitor {
-    typealias Return = String
+    typealias ExprRetrun = String
 
     func print(expr: Expr) -> String {
         return expr.accept(visitor: self)
