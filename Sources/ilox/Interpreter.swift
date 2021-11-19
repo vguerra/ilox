@@ -11,12 +11,25 @@
 import Foundation
 
 
-class Interpreter : ExprThrowableVisitor {
+class Interpreter : ExprThrowableVisitor, StmtThrowableVisitor {
 
     typealias ExprReturn = AnyObject?
+    typealias StmtReturn = Void
 
-    func interpret(expression: Expr) throws {
-        print(stringify(value: try evaluate(expr: expression)))
+    func interpret(statements : [Stmt]) {
+        do {
+            for statement in statements {
+                try execute(statement: statement)
+            }
+        }  catch let error as LoxError {
+            ErrorUtil.runtimeError(rerror: error)
+        } catch {
+            fatalError("Unexpected interpreter error.")
+        }
+    }
+
+    private func execute(statement: Stmt) throws {
+        try statement.accept(visitor: self)
     }
 
     private func stringify(value: AnyObject?) -> String {
@@ -31,6 +44,15 @@ class Interpreter : ExprThrowableVisitor {
         }
 
         return "nil"
+    }
+
+    func visitStmtExpression(stmt: Expression) throws -> Void {
+        try evaluate(expr: stmt.expression)
+    }
+
+    func visitStmtPrint(stmt: Print) throws -> Void {
+        let value = try evaluate(expr: stmt.expression)
+        print(stringify(value: value))
     }
 
     func visitExprExprBlock(expr: ExprBlock) throws -> AnyObject? {

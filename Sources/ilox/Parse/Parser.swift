@@ -13,12 +13,21 @@ final class Parser {
         self.tokens = tokens
     }
 
-    func parse() -> Expr? {
-        do {
-            return try expression()
-        } catch {
-            return nil;
+    func parse() -> [Stmt] {
+        var statements = Array<Stmt>()
+        while (!isAtEnd()) {
+            do {
+                let stmt = try statement()
+                statements.append(stmt)
+            } catch let error as LoxError {
+                ErrorUtil.report(message: error.localizedDescription)
+                return statements
+            } catch {
+                fatalError("Unexpected error when parsing: \(error.localizedDescription)")
+            }
         }
+
+        return statements
     }
 
     // MARK: Helper methods for tree navigation
@@ -62,7 +71,28 @@ final class Parser {
     }
 
     // MARK: Parsing of grammar, each rule represented by one method
-private func expression() throws -> Expr {
+    private func statement() throws -> Stmt {
+        if (match(.PRINT)) {
+            return try printStatement()
+        }
+
+        return try expressionStatement()
+    }
+
+    private func printStatement() throws -> Stmt {
+        let expr = try expression()
+        try consume(.SEMICOLON, "Expect ';' after value.")
+
+        return Print(expression: expr)
+    }
+
+    private func expressionStatement() throws -> Stmt {
+        let expr = try expression()
+        try consume(.SEMICOLON, "Expect ';' after expression.")
+        return Expression(expression: expr)
+    }
+
+    private func expression() throws -> Expr {
         return try expressionBlock()
     }
 
