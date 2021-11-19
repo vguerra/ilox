@@ -50,8 +50,11 @@ enum ErrorUtil {
         }
     }
 
+    static func report(message: String) {
+        FileHandle.standardError.write(message.data(using: .utf8)!)
+    }
     static func report(line: Int, within location: String, message: String) {
-        FileHandle.standardError.write("[line \(line)] Error \(location): \(message)\n".data(using: .utf8)!)
+        report(message: "[line \(line)] Error \(location): \(message)\n")
     }
 
     static func runtimeError(rerror: LoxError) {

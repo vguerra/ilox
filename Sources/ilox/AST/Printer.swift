@@ -5,11 +5,25 @@
 //  Created by Victor Guerra on 27/09/2021.
 //
 
-class ASTPrinter : ExprVisitor {
+class ASTPrinter : ExprVisitor, StmtVisitor {
+
     typealias ExprRetrun = String
+    typealias StmtReturn = String
+
+    func print(stmt: Stmt) -> String {
+        return stmt.accept(visitor: self)
+    }
 
     func print(expr: Expr) -> String {
         return expr.accept(visitor: self)
+    }
+
+    func visitStmtExpression(stmt: Expression) -> String {
+        return parenthesize(name: "stmt", stmt.expression)
+    }
+
+    func visitStmtPrint(stmt: Print) -> String {
+        return parenthesize(name: "print", stmt.expression)
     }
 
     func visitExprExprBlock(expr: ExprBlock) -> String {

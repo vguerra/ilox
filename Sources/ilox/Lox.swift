@@ -56,26 +56,17 @@ struct Lox {
         }
 
         let parser = Parser(tokens)
-        let expression = parser.parse()
+        let statements = parser.parse()
 
         if phases.contains(.parse) {
-            if let parsedExpr = expression {
-                print(ASTPrinter().print(expr: parsedExpr))
-                return
+            let astPrinter = ASTPrinter()
+            for statement in statements {
+                print(astPrinter.print(stmt: statement))
             }
+            return
         }
 
-        if phases.contains(.interpret) || phases.contains(.allPhases) {
-            if let parsedExpr = expression {
-                let interpreter = Interpreter()
-                do {
-                    try interpreter.interpret(expression: parsedExpr)
-                } catch let error as LoxError {
-                    ErrorUtil.runtimeError(rerror: error)
-                } catch {
-                    fatalError("Unexpected interpreter error.")
-                }
-            }
-        }
+        let interpreter = Interpreter()
+        interpreter.interpret(statements: statements)
     }
 }
