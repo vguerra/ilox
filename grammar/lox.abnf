@@ -1,7 +1,11 @@
 ; Grammar for Lox.
 ; To generate png: ./bin/kgt -l abnf -e svg < /usr/local/swift/lox/ilox/grammar/lox.abnf | isvg -b white -o lox.png
 
-program             = *statement "EOF"
+program             = *declaration "EOF"
+
+declaration         = varDeclaration / statement
+
+varDeclaration      = "var" identifier *1( "=" expression ) ";"
 
 statement           = expressionStatement / printStatement
 
@@ -25,10 +29,14 @@ factor              = unary *( ( "/" / "*" ) unary )
 
 unary               = ( "-" / "!" ) unary / primary
 
-primary             = 1*DIGIT "." 1*DIGIT / 1*ALPHA /
+primary             = 1*DIGIT "." 1*DIGIT / string / identifier /
                     "true" / "false" / "nil" / "(" expression ")" /
                     ; START OF ERROR PRODUCTIONS
                     ( "!=" / "==" ) comparison /
                     ( ">" / ">=" / "<" / "<=" ) term /
                     ( "-" / "+" ) factor /
                     ( "/" / "*" ) unary
+
+string              = DQUOTE 1*CHAR DQUOTE
+
+identifier          = 1*ALPHA

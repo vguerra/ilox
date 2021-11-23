@@ -19,20 +19,45 @@ This implementation supports the following:
 ```
 ; Grammar for Lox.
 
-expression  = equality
+program             = *declaration "EOF"
 
-equality    = comparison *( ( "!=" / "==" ) comparison )
+declaration         = varDeclaration / statement
 
-comparison  = term *( ( ">" / ">=" / "<" / "<=" ) term )
+varDeclaration      = "var" identifier *1( "=" expression ) ";"
 
-term        = factor *( ( "-" / "+" ) factor )
+statement           = expressionStatement / printStatement
 
-factor      = unary *( ( "/" / "*" ) unary )
+printStatement      = "print" expression ";"
 
-unary       = ( "-" / "!" ) unary / primary
+expressionStatement = expression ";"
 
-primary     = 1*DIGIT "." 1*DIGIT / 1*ALPHA /
-              "true" / "false" / "nil" / "(" expression ")"
+expression          = expressionBlock
+
+expressionBlock     = conditional *( "," expressionBlock)
+
+conditional         = equality *1( "?" expression ":" conditional )
+
+equality            = comparison *( ( "!=" / "==" ) comparison )
+
+comparison          = term *( ( ">" / ">=" / "<" / "<=" ) term )
+
+term                = factor *( ( "-" / "+" ) factor )
+
+factor              = unary *( ( "/" / "*" ) unary )
+
+unary               = ( "-" / "!" ) unary / primary
+
+primary             = 1*DIGIT "." 1*DIGIT / string / identifier /
+                    "true" / "false" / "nil" / "(" expression ")" /
+                    ; START OF ERROR PRODUCTIONS
+                    ( "!=" / "==" ) comparison /
+                    ( ">" / ">=" / "<" / "<=" ) term /
+                    ( "-" / "+" ) factor /
+                    ( "/" / "*" ) unary
+
+string              = DQUOTE 1*CHAR DQUOTE
+
+identifier          = 1*ALPHA
 ```
 
 Find the definition in the [lox.abnf](grammar/lox.abnf) file. 
