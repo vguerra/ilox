@@ -29,5 +29,8 @@ args:
     "Unary": [
       "Token": "op",
       "Expr": "right"
+    ],
+    "Variable": [
+      "Token": "name"
     ]
   ]

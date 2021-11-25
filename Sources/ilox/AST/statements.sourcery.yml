@@ -11,5 +11,9 @@ args:
     ],
     "Print": [
         "Expr": "expression"
+    ],
+    "Var": [
+        "Token": "name",
+        "Expr?": "initializer"
     ]
   ]

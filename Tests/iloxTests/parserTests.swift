@@ -46,12 +46,22 @@ final class parserTests: XCTestCase {
         })
     }
 
+    func testVariableDecl() throws {
+        XCTAssert(fileCheckOutput(withPrefixes: ["VAR_DECL"], options: .disableColors) {
+            // VAR_DECL: (var Code - init: null)
+            loxInterpreter.run(code: "var Code;", with: .parse)
+            // VAR_DECL: (var Code - init:  1)
+            loxInterpreter.run(code: "var Code = 1;", with: .parse)
+        })
+    }
+
 #if !os(macOS)
     static var allTests = testCase([
         ("testPrettyPrinter", testPrettyPrinter),
         ("testExprBlock", testExprBlock),
         ("testTernaryOperator", testTernaryOperator),
-        ("testErrorMissingLeftOperandBinaryOps", testErrorMissingLeftOperandBinaryOps)
+        ("testErrorMissingLeftOperandBinaryOps", testErrorMissingLeftOperandBinaryOps),
+        ("testVariableDecl", testVariableDecl)
     ])
 #endif
 }

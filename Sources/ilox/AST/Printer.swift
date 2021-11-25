@@ -18,6 +18,17 @@ class ASTPrinter : ExprVisitor, StmtVisitor {
         return expr.accept(visitor: self)
     }
 
+    func visitExprVariable(expr: Variable) -> String {
+        return  "var \(expr.name)"
+    }
+
+    func visitStmtVar(stmt: Var) -> String {
+        if let initializerExpr = stmt.initializer {
+            return parenthesize(name: "var \(stmt.name.lexeme) - init: ", initializerExpr)
+        }
+        return "(var \(stmt.name.lexeme) - init: null)"
+    }
+
     func visitStmtExpression(stmt: Expression) -> String {
         return parenthesize(name: "stmt", stmt.expression)
     }
