@@ -46,6 +46,14 @@ class Interpreter : ExprThrowableVisitor, StmtThrowableVisitor {
         return "nil"
     }
 
+    func visitExprVariable(expr: Variable) throws -> AnyObject? {
+        fatalError("not implemented")
+    }
+
+    func visitStmtVar(stmt: Var) throws -> Void {
+        fatalError("not implemented")
+    }
+
     func visitStmtExpression(stmt: Expression) throws -> Void {
         try evaluate(expr: stmt.expression)
     }

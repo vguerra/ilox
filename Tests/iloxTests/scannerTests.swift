@@ -102,6 +102,16 @@ final class scannerTests: XCTestCase {
         })
     }
 
+    func testScanningVarDecls() throws {
+        XCTAssert(fileCheckOutput(withPrefixes: ["VAR_DECL"], options: .disableColors) {
+            // VAR_DECL: VAR var nil
+            // VAR_DECL: IDENTIFIER Code nil
+            // VAR_DECL: SEMICOLON ; nil
+            // VAR_DECL: EOF  nil
+            loxInterpreter.run(code: "var Code;", with: .scan)
+        })
+    }
+
 #if !os(macOS)
     static var allTests = testCase([
         ("testScanning1CharTokens", testScanning1CharTokens),
@@ -111,7 +121,8 @@ final class scannerTests: XCTestCase {
         ("testScanningNumbers", testScanningNumbers),
         ("testScanningKeywords", testScanningKeywords),
         ("testScanningIdentifiers", testScanningIdentifiers),
-        ("testScanningCStyleComments", testScanningCStyleComments)
+        ("testScanningCStyleComments", testScanningCStyleComments),
+        ("testScanningVarDecls", testScanningVarDecls)
     ])
 #endif
 }

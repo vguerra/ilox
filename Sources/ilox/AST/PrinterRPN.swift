@@ -8,6 +8,10 @@
 class ASTPrinterRPN : ExprVisitor {
     typealias ExprReturn = String
 
+    func visitExprVariable(expr: Variable) -> String {
+        return "(var \(expr.name.lexeme))"
+    }
+
     func visitExprExprBlock(expr: ExprBlock) -> String {
         return parenthesize(name: "expr-block", expr.head, expr.tail)
     }

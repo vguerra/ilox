@@ -17,7 +17,7 @@ final class Parser {
         var statements = Array<Stmt>()
         while (!isAtEnd()) {
             do {
-                let stmt = try statement()
+                let stmt = try declaration()
                 statements.append(stmt)
             } catch let error as LoxError {
                 ErrorUtil.report(message: error.localizedDescription)
@@ -71,6 +71,28 @@ final class Parser {
     }
 
     // MARK: Parsing of grammar, each rule represented by one method
+
+    private func declaration() throws -> Stmt {
+        if (match(.VAR)) {
+            return try varDeclaration()
+        }
+
+        return try statement()
+    }
+
+    private func varDeclaration() throws -> Stmt {
+        let name = try consume(.IDENTIFIER, "Expect variable name")
+
+        var initializer: Expr? = nil
+        if (match(.EQUAL)) {
+            initializer = try expression()
+        }
+
+        try consume(.SEMICOLON, "Expect ';' after variable declaration")
+
+        return Var(name: name, initializer: initializer)
+    }
+
     private func statement() throws -> Stmt {
         if (match(.PRINT)) {
             return try printStatement()
@@ -193,6 +215,10 @@ final class Parser {
 
         if (match(.NUMBER, .STRING)) {
             return Literal(value: previous().literal as AnyObject)
+        }
+
+        if (match(.IDENTIFIER)) {
+            return Variable(name: previous())
         }
 
         if (match(.LEFT_PAREN)) {
