@@ -15,6 +15,7 @@ enum LoxError : Error {
         case operandsNotNumbers(token: Token)
         case operandsNotNumbersNorStrings(token: Token)
         case divisionByZero(token: Token)
+        case undefinedVariable(token: Token)
     }
 
     case runtime(ofKind: Runtime)
@@ -31,6 +32,8 @@ extension LoxError.Runtime : LocalizedError {
                 return "Operands must be either Numbers or Strings"
             case .divisionByZero(token: let tok):
                 return "Division by zero at line: \(tok.line) "
+            case .undefinedVariable(token: let tok):
+                return "Undefined variable \(tok.lexeme) at line \(tok.line)."
         }
     }
 }
