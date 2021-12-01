@@ -48,13 +48,26 @@ final class interpreterTests: XCTestCase {
         })
     }
 
+    func testVariables() throws {
+        XCTAssert(fileCheckOutput(withPrefixes: ["VARS"], options: .disableColors) {
+            // VARS: 3
+            loxInterpreter.run(
+                code: """
+                var a = 1;
+                var b = 2;
+                print a + b;
+            """, with: .interpret)
+        })
+    }
+
 
 #if !os(macOS)
     static var allTests = testCase([
         ("testNumericExpressions", numericExpressions),
         ("testStringExpressions", stringExpressions),
         ("testAddStringAndNumbers", addStringAndNumbers),
-        ("testDivisionByZero", testDivisionByZero)
+        ("testDivisionByZero", testDivisionByZero),
+        ("testVariables", testVariables)
     ])
 #endif
 }

@@ -16,6 +16,8 @@ class Interpreter : ExprThrowableVisitor, StmtThrowableVisitor {
     typealias ExprReturn = AnyObject?
     typealias StmtReturn = Void
 
+    private let environment = Environment()
+
     func interpret(statements : [Stmt]) {
         do {
             for statement in statements {
@@ -47,11 +49,15 @@ class Interpreter : ExprThrowableVisitor, StmtThrowableVisitor {
     }
 
     func visitExprVariable(expr: Variable) throws -> AnyObject? {
-        fatalError("not implemented")
+        return try environment.get(expr.name)
     }
 
     func visitStmtVar(stmt: Var) throws -> Void {
-        fatalError("not implemented")
+        if let initializer = stmt.initializer {
+            environment.define(stmt.name.lexeme, with: try evaluate(expr: initializer))
+        } else {
+            environment.define(stmt.name.lexeme, with: nil)
+        }
     }
 
     func visitStmtExpression(stmt: Expression) throws -> Void {
